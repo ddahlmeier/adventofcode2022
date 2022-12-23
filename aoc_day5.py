@@ -38,16 +38,9 @@ for line in instructions:
     print(stacks)
     print(line)
     n, source, target = parse_instruction(line)
-    stacks = move_part2(n, source, target, stacks)
+    stacks = move_part1(n, source, target, stacks)
     print("----")
-
-top_crates = ''.join([stack[0] stacks, instructions = parse_drawing(inputs)
-for line in instructions:
-    print(stacks)
-    print(line)
-    n, source, target = parse_instruction(line)
-    stacks = move_part2(n, source, target, stacks)
-    print("----")
+top_crates = ''.join([stack[0] if len(stack)>0 else ' ' for stack in stacks])
 
 stacks, instructions = parse_drawing(inputs)
 for line in instructions:
