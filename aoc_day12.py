@@ -53,10 +53,18 @@ def in_queue(queue, node, distance):
             return True
     return False
 
+def starting_points(map):
+    for row, line in enumerate(map):
+        for column, symbol in enumerate(line):
+            if height(symbol) == height('a'):
+                yield (row, column)
 
-def bfs(map):
+def bfs(map, single_start=True):
     adjacency, start, end, map_dim = parse_map(map)
-    queue = [(start, 0)]
+    if single_start:
+        queue = [(start, 0)]
+    else:
+        queue = [(node, 0) for node in starting_points(map)]
     explored = defaultdict(bool)
     while len(queue) > 0:
         node, steps = queue.pop(0)
@@ -86,4 +94,7 @@ def print_map(map, explored, map_dim):
 
 # part 1
 map = inputs.splitlines()
-bfs(map)
+bfs(map, single_start=True)
+
+# part 2
+bfs(map, single_start=False)
