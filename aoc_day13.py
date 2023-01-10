@@ -1,5 +1,9 @@
 # Advent of Code 13: Distress Signal
 
+import math
+import functools
+from operator import itemgetter
+
 inputs = """[1,1,3,1,1]
 [1,1,5,1,1]
 
@@ -48,30 +52,30 @@ def parse(line):
             assert(False)
     return stack[0][0]
 
-def in_order(left, right):
+def cmp(left, right):
     print("Compare", left, "vs", right)
     if type(left) == type(right) == int:
         if left < right:
-            return True
+            return -1
         elif right < left:
-            return False
+            return +1
         else:
-            return None
+            return 0
     elif type(left) == type(right) == list:
         for l,r in zip(left, right):
-            order = in_order(l,r)
-            if order == True or order == False:
+            order = cmp(l,r)
+            if order in [-1,1]:
                 return order
         if len(left) < len(right):
-            return True
+            return -1
         elif len(left) > len(right):
-            return False
+            return +1
         else:
-            return None
+            return 0
     elif type(left) == list and type(right) == int:
-        return in_order(left, [right])
+        return cmp(left, [right])
     elif type(left) == int and type(right) == list:
-        return in_order([left], right)
+        return cmp([left], right)
     else:
         print("unknown arguments to compare")
         assert(False)
@@ -81,11 +85,11 @@ indices_in_order = []
 for idx, block in enumerate(inputs.split("\n\n"),start=1):
     print(block)
     block = list(map(parse, block.splitlines()))
-    order = in_order(block[0], block[1])
-    if order == True:
+    order = cmp(block[0], block[1])
+    if order == -1:
         print("inputs are in the right order")
         indices_in_order.append(idx)
-    elif order == False:
+    elif order == +1:
         print("inputs are NOT in the right order")
     else:
         print("order could not be determined")
@@ -94,3 +98,7 @@ print(indices_in_order)
 print(sum(indices_in_order))
 
 
+# part 2
+packages = [parse(line) for line in inputs.splitlines() if line != ""] + [[[2]]] + [[[6]]]
+decoder_key = math.prod(list(map(itemgetter(0), (filter(lambda x:x[1] in [[[2]], [[6]]], enumerate(sorted(packages, key=functools.cmp_to_key(cmp)), start=1))))))
+print(decoder_key)
